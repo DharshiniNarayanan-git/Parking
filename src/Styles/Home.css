@@ -1,0 +1,115 @@
+/* Home.css */
+
+.container {
+  overflow: hidden;
+  background-color: #f6f5f5;
+
+}
+
+.appbar {
+  background-color: white !important;
+  padding-block: 5px;
+}
+
+.logo {
+  width: 70%;
+  height: auto;
+}
+
+.typography-start-journey {
+  text-align: center;
+  border-radius: 4px;
+  background-color: #e3e3e3;
+  padding: 8px 16px;
+}
+
+.side-panel {
+  height: 85vh;
+}
+
+.side-panel-count-Box{
+  background-color: #ffff;
+  padding: 5px;
+  border-radius: 8px;
+  width: 120px;
+}
+
+/* Medium screens (tablet) */
+@media (min-width: 600px) and (max-width: 959px) {
+  .side-panel-count-Box {
+    width: 65px;
+    padding: 5px;
+  }
+}
+
+.side-panel-count{
+  text-align: center !important;
+  font-size: 15px !important;
+  font-weight: bold !important;
+}
+
+@media (min-width: 600px)and (max-width: 959px){
+  .side-panel-count{
+    font-size: 15px !important;
+  }
+}
+
+.side-panel-count-Typography{
+  text-align: center !important;
+  font-size: 12px !important;
+  font-family: sans-serif !important;
+}
+
+@media (min-width: 600px)and (max-width: 959px){  
+.side-panel-count-Typography{
+    text-align: center !important;
+    font-size: 8px !important;
+    font-weight: bold !important;
+  }
+}
+
+.appbar-button {
+  font-family: sans-serif;
+  /* font-size: 13px !important; */
+}
+
+.appbar-button:hover{
+  color: #3ABEF9;
+  
+}
+
+.radio-button-Box{
+    background-color: #ffff;
+    border-radius: 5px;
+}
+
+
+.radio-button-RadioGroup{
+  padding: 5.1px;
+}
+
+@media (min-width: 600px) and (max-width: 959px) {
+  .radio-button-RadioGroup{
+    padding: 3px;   
+  }
+}
+
+.radio-button{
+  font-size: 15px !important;
+}
+
+.radio-button-Typography{
+  font-size: 12px !important;
+  font-family: sans-serif !important;
+}
+
+@media (min-width: 600px)and (max-width: 959px) {
+  .radio-button-Typography{
+  font-size: 8px !important;
+     
+  }
+}
+
+.radio-button-margin{
+  margin-top: 13px !important;
+}
