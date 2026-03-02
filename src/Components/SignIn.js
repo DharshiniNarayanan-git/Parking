@@ -8,48 +8,74 @@ import {
   IconButton,
   TextField,
   Typography,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import MicrosoftIcon from "@mui/icons-material/Microsoft";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-function SignIn({ redirect }) {
+function SignIn() {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
-  
+  const [isRegister, setIsRegister] = useState(false); // Toggle mode
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const url = isRegister
+        ? "http://localhost:8080/api/auth/register"
+        : "http://localhost:8080/api/auth/login";
+
+      const response = await axios.post(url, {
+        email,
+        password,
+      });
+
+      if (isRegister) {
+        setSuccess("Registration successful! Please login.");
+        setIsRegister(false);
+      } else {
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+        navigate("/home");
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <Container
-      maxWidth={false}
-      sx={{ height: 550 }}
-      disableGutters
-      className="container"
-    >
+    <Container maxWidth={false} sx={{ height: 550 }} disableGutters>
       <Grid container height={"100%"} alignItems={"center"}>
         <Grid item lg={6} textAlign={"center"}>
           <img
             src="Access_Earth_Logo.png"
-            alt="No Image"
+            alt="Logo"
             style={{ width: "100%", maxWidth: "300px", height: "30vh" }}
           />
         </Grid>
 
         <Grid item lg={6}>
-          <Grid
-            item
-            display={"flex"}
-            gap={1}
-            mb={2}
-            alignItems={"center"}
-            justifyContent={"center"}
-            lg={8.5}
-          >
+          <Grid display={"flex"} gap={1} mb={2} justifyContent={"center"}>
             <Typography fontSize={25} color={"#7E7E7E"}>
-              Sign in with
+              {isRegister ? "Register with" : "Sign in with"}
             </Typography>
             <Avatar sx={{ bgcolor: "#386BC0" }}>
-              {/* <IconButton sx={{ color: "white" }} onClick={redirect}> */}
               <IconButton sx={{ color: "white" }}>
                 <MicrosoftIcon />
               </IconButton>
@@ -65,49 +91,92 @@ function SignIn({ redirect }) {
               </IconButton>
             </Avatar>
           </Grid>
-          <Grid item my={2}>
-            <Divider variant="middle" sx={{ width: 410, fontWeight: "bold" }}>
-              Or
-            </Divider>
+
+          <Divider sx={{ width: 410, mx: "auto", my: 2 }}>Or</Divider>
+
+          {/* Error */}
+          {error && (
+            <Alert severity="error" sx={{ width: 450, mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          {/* Success */}
+          {success && (
+            <Alert severity="success" sx={{ width: 450, mb: 2 }}>
+              {success}
+            </Alert>
+          )}
+
+          <Grid container gap={2}>
+            <TextField
+              label="Email"
+              variant="outlined"
+              sx={{ width: 450 }}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              label="Password"
+              type="password"
+              variant="outlined"
+              sx={{ width: 450 }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </Grid>
 
-          <Grid item container gap={2}>
-            <Grid item lg={12}>
-              <TextField label="Email" variant="outlined" sx={{ width: 450 }} />
+          {!isRegister && (
+            <Grid container justifyContent={"space-between"} sx={{ width: 450, mt: 1 }}>
+              <Grid item>
+                <Checkbox />
+                Remember Me
+              </Grid>
+              <Grid item>
+                <Button sx={{ textTransform: "none", color: "#525252" }}>
+                  Forget Password?
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item lg={12}>
-              <TextField
-                label="Password"
-                variant="outlined"
-                type="password"
-                sx={{ width: 450 }}
-              />
-            </Grid>
-          </Grid>
-          <Grid item container lg={8.4} justifyContent={"space-between"}>
-            <Grid item>
-              <Checkbox />
-              Remember Me
-            </Grid>
-            <Grid item>
-              <Button style={{ textTransform: "none", color: "#525252" }}>
-                Forget Password?
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid item>
-            <Button variant="contained" onClick={()=>navigate('/home')}>Login</Button>
-          </Grid>
-          <Grid item display={"flex"} alignItems={"center"}>
-            <Typography>Don't have an account?</Typography>
+          )}
+
+          <Grid mt={2}>
             <Button
-              style={{
+              variant="contained"
+              fullWidth
+              sx={{ width: 450 }}
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : isRegister ? (
+                "Register"
+              ) : (
+                "Login"
+              )}
+            </Button>
+          </Grid>
+
+          <Grid display={"flex"} alignItems={"center"} mt={2}>
+            <Typography>
+              {isRegister
+                ? "Already have an account?"
+                : "Don't have an account?"}
+            </Typography>
+            <Button
+              sx={{
                 textTransform: "none",
                 color: "red",
                 fontWeight: "bold",
               }}
+              onClick={() => {
+                setIsRegister(!isRegister);
+                setError("");
+                setSuccess("");
+              }}
             >
-              Register
+              {isRegister ? "Login" : "Register"}
             </Button>
           </Grid>
         </Grid>
@@ -117,5 +186,3 @@ function SignIn({ redirect }) {
 }
 
 export default SignIn;
-
-

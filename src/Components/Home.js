@@ -81,7 +81,7 @@ const Home = () => {
     console.log("valllll", value);
 
     setSelectedBayType(value);
-    setSelectedBox('all-avail')
+    setSelectedBox("all-avail");
 
     dispatch(setBayType(value));
 
@@ -109,13 +109,12 @@ const Home = () => {
         setCenter({
           lat: centerLocation.lat,
           lng: centerLocation.lng,
-        })
+        }),
       );
     }
   };
 
   const handleAvailabilityChange = (value) => {
-
     console.log("valueee", value, selectedBayType);
     setSelectedBox(value);
 
@@ -142,7 +141,7 @@ const Home = () => {
         setCenter({
           lat: centerLocation.lat,
           lng: centerLocation.lng,
-        })
+        }),
       );
     } else if (value === "all-avail" && selectedBayType === "ev_charging") {
       dispatch(setAvailability(null));
@@ -169,19 +168,19 @@ const Home = () => {
       dispatch(setError("Geolocation is not supported by this browser"));
       return;
     }
-  
+
     if (watchId) {
       // Already tracking
       return;
     }
-  
+
     const id = navigator.geolocation.watchPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
         console.log("Updated Location:", latitude, longitude);
-  
-        dispatch(setLiveLocation({ lat: 53.350140, lng: -6.266155 }));
-        dispatch(setCenter({ lat: 53.350140, lng: -6.266155 }));
+
+        dispatch(setLiveLocation({ lat: 53.35014, lng: -6.266155 }));
+        dispatch(setCenter({ lat: 53.35014, lng: -6.266155 }));
         dispatch(setZoom(13));
         dispatch(setDashCenter(null));
       },
@@ -193,13 +192,12 @@ const Home = () => {
         enableHighAccuracy: true,
         timeout: 5000,
         maximumAge: 0,
-      }
+      },
     );
-  
+
     setWatchId(id);
   };
-  
- 
+
   const stopLiveLocation = () => {
     if (watchId) {
       navigator.geolocation.clearWatch(watchId);
@@ -210,7 +208,6 @@ const Home = () => {
       dispatch(setCenter({ lat: centerLocation.lat, lng: centerLocation.lng }));
     }
   };
-  
 
   const totalCount = useCallback(() => {
     let availableCount = 0;
@@ -220,26 +217,26 @@ const Home = () => {
     let allCount = 0;
 
     data1?.forEach((element) => {
-      const { max_capacity, num_spaces_occupied, authSts, status } =
+      const { availableSlots, occupiedSlots, authSts, status } =
         element.properties;
 
-      if (max_capacity > num_spaces_occupied) {
-        availableCount += max_capacity - num_spaces_occupied;
+      if (availableSlots > 0) {
+        availableCount += availableSlots;
       }
 
-      if (num_spaces_occupied > 0) {
-        occupiedCount += num_spaces_occupied;
+      if (occupiedSlots > 0) {
+        occupiedCount += occupiedSlots;
       }
 
-      if (status === "occupied" && authSts === "Occupied and not authorized") {
-        unauthorized += 1;
-      }
+      // if (status === "occupied" && authSts === "Occupied and not authorized") {
+      //   unauthorized += 1;
+      // }
     });
 
     setAvailableCount(availableCount);
     setOccupiedCount(occupiedCount);
-    setUnauthorizedCount(unauthorized);
-    setNoDataCOunt(noData);
+    // setUnauthorizedCount(unauthorized);
+    // setNoDataCOunt(noData);
     setAllCount(availableCount + occupiedCount + unauthorized);
   }, [data1]);
 
@@ -264,19 +261,19 @@ const Home = () => {
     }
 
     data1?.forEach((element) => {
-      const { max_capacity, num_spaces_occupied, parking_bay_type } =
+      const { availableSlots, occupiedSlots, parking_bay_type } =
         element.properties;
 
       // Check if the parking bay type is 'ev_charging'
       if (parking_bay_type === value) {
         // Calculate available spaces
-        if (max_capacity > num_spaces_occupied) {
-          availableCount += max_capacity - num_spaces_occupied;
+        if (availableSlots > 0) {
+          availableCount += availableSlots;
         }
 
         // Calculate occupied spaces
-        if (num_spaces_occupied > 0) {
-          occupiedCount += num_spaces_occupied;
+        if (occupiedSlots > 0) {
+          occupiedCount += occupiedSlots;
         }
       }
     });
@@ -293,376 +290,371 @@ const Home = () => {
   };
 
   return (
-    <Container maxWidth={false} disableGutters className="container">
-      <Grid container>
-        {/* AppBar */}
-        <Grid item xl={12} md={12} xs={12}>
-          <AppBar elevation={0} className="appbar">
-            <Toolbar>
-              <Grid container justifyContent={"space-between"}>
-                {/* Logo */}
-                <Grid
-                  item
-                  xs={12}
-                  md={3}
-                  lg={3}
-                  xl={3}
-                  sm={4}
-                  display="flex"
-                  alignItems="center"
-                >
-                  <Box
-                    component="img"
-                    src="Access_Earth_Logo.png"
-                    className="logo"
-                    width="50%"
-                  />
-                </Grid>
+    <Container maxWidth={false} disableGutters>
+      {/* ===== APP BAR ===== */}
+      <AppBar
+        elevation={0}
+        sx={{
+          backdropFilter: "blur(10px)",
+          background: "rgba(255,255,255,0.85)",
+          borderBottom: "1px solid #e0e0e0",
+        }}
+      >
+        <Toolbar>
+          <Grid container alignItems="center" justifyContent="space-between">
+            <Box
+              component="img"
+              src="Access_Earth_Logo.png"
+              sx={{ height: 40 }}
+            />
 
-                {/* Buttons */}
-                <Grid item xs={12} sm={5} md={4} lg={4} xl={3}>
-                  <Grid
-                    item
-                    container
-                    md={12}
-                    lg={12}
-                    xl={12}
-                    sm={12}
-                    alignItems={"center"}
-                    textAlign={"end"}
-                    justifyContent={"end"}
-                  >
-                    <Grid item xs={6} sm={4} md={4} lg={3.5} xl={3}>
-                      <Button
-                        onClick={() => {
-                          startLiveLocation();
-                          handleButtonClick("start");
-                        }}
-                        size="small"
-                        startIcon={<MyLocationIcon color="primary" />}
-                        sx={{
-                          color:
-                            selectedButton === "start" ? "#3ABEF9" : "#333333",
-                          border: selectedButton === "start" ? 1 : 0,
-                          fontSize: { sm: "11px", md: "13px" },
-                        }}
-                        // disabled={selectedButton === 'start'}
-                        className="appbar-button"
-                      >
-                        Start Live
-                      </Button>
-                    </Grid>
-
-                    <Grid item xs={6} sm={4} md={4} lg={3.5} xl={3}>
-                      <Button
-                        onClick={() => {
-                          stopLiveLocation();
-                          handleButtonClick("stop");
-                        }}
-                        size="small"
-                        startIcon={<MyLocationIcon sx={{ color: "gray" }} />}
-                        sx={{
-                          color:
-                            selectedButton === "stop" ? "#3ABEF9" : "#333333",
-                          border: selectedButton === "stop" ? 1 : 0,
-                          fontSize: { sm: "11px", md: "13px" },
-                        }}
-                        className="appbar-button"
-                      >
-                        Stop Live
-                      </Button>
-                    </Grid>
-                    {/* Menu */}
-                    <Grid item xs={6} sm={2} md={3} lg={1.3} xl={1.4}>
-                      <Button
-                        size="small"
-                        onClick={(e) => setAnchorEl(e.currentTarget)}
-                        sx={{ color: "black" }}
-                      >
-                        <MenuIcon
-                          sx={{
-                            fontSize: {
-                              xs: "16px", // Extra small devices
-                              sm: "20px", // Small devices
-                              md: "24px", // Medium devices
-                              lg: "30px", // Large devices
-                            },
-                          }}
-                        />
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Toolbar>
-          </AppBar>
-        </Grid>
-        <BasicMenu
-          open={open}
-          anchorEl={anchorEl}
-          handleClose={() => setAnchorEl(null)}
-        />
-
-        {/* Body */}
-        <Grid item xl={12} md={12} xs={12} lg={12} mt={10.5}>
-          <Grid container>
-            {/* Map */}
-            <Grid item xl={9} md={9} xs={9} lg={9}>
-              <MapComponent />
-            </Grid>
-
-            {/* Rigth-Side Bar */}
-
-            <Grid item xl={3} md={3} xs={3} lg={3} className="side-panel">
-              {/* Count */}
-              <Grid item container gap={2} justifyContent={"center"}>
-                <Grid item>
-                  <Tooltip title="Click to See Available Parking Lots" arrow>
-                    <Box
-                      className="side-panel-count-Box"
-                      onClick={() => handleAvailabilityChange("available")}
-                      style={{
-                        cursor: "pointer",
-                        backgroundColor:
-                          selectedBox === "available" ? "#D9EAFD" : "#ffff",
-                      }}
-                    >
-                      <AccessibilityAvailableIcon
-                        fillColor={"#00B500"}
-                        size={isSmall ? "5px" : isMedium ? "8px" : "10px"}
-                      />
-                      <Typography className="side-panel-count">
-                        {availableCount}
-                      </Typography>
-                      <Typography className="side-panel-count-Typography">
-                        AVAILABLE
-                      </Typography>
-                    </Box>
-                  </Tooltip>
-                </Grid>
-
-                <Grid item>
-                  <Tooltip title="Click to See Occupied Parking Lots" arrow>
-                    <Box
-                      className="side-panel-count-Box"
-                      onClick={() => handleAvailabilityChange("occupied")}
-                      style={{
-                        cursor: "pointer",
-                        backgroundColor:
-                          selectedBox === "occupied" ? "#D9EAFD" : "#ffff",
-                      }}
-                    >
-                      <AccessibilityOccupiedIcon size="40px" />
-                      <Typography className="side-panel-count">
-                        {occupiedCount}
-                      </Typography>
-                      <Typography className="side-panel-count-Typography">
-                        OCCUPIED
-                      </Typography>
-                    </Box>
-                  </Tooltip>
-                </Grid>
-
-                <Grid item>
-                  <Tooltip title="Click to See Unauthorized Parking Lots" arrow>
-                    <Box
-                      className="side-panel-count-Box"
-                      onClick={() => handleAvailabilityChange("unauthorized")}
-                      style={{
-                        cursor: "pointer",
-                        backgroundColor:
-                          selectedBox === "unauthorized" ? "#D9EAFD" : "#ffff",
-                      }}
-                    >
-                      <Unauthorized size="40px" />
-                      <Typography className="side-panel-count">
-                        {unauthorizedCount}
-                      </Typography>
-                      <Typography className="side-panel-count-Typography">
-                        UNAUTHORIZED
-                      </Typography>
-                    </Box>
-                  </Tooltip>
-                </Grid>
-
-                <Grid item>
-                  <Tooltip title="Click to See Nosignal Parking Lots" arrow>
-                    <Box
-                      className="side-panel-count-Box"
-                      onClick={() => handleAvailabilityChange("nosignal")}
-                      style={{
-                        cursor: "pointer",
-                        backgroundColor:
-                          selectedBox === "nosignal" ? "#D9EAFD" : "#ffff",
-                      }}
-                    >
-                      <NonsensorDataIcon size="40px" />
-                      <Typography className="side-panel-count">
-                        {noDataCount}
-                      </Typography>
-                      <Typography className="side-panel-count-Typography">
-                        NO SIGNAL
-                      </Typography>
-                    </Box>
-                  </Tooltip>
-                </Grid>
-
-                <Grid item>
-                  <Tooltip title="Click to See All Parking Lots" arrow>
-                    <Box
-                      className="side-panel-count-Box"
-                      onClick={() => handleAvailabilityChange("all-avail")}
-                      style={{
-                        cursor: "pointer",
-                        backgroundColor:
-                          selectedBox === "all-avail" ? "#D9EAFD" : "#ffff",
-                      }}
-                    >
-                      <AccessibilityAvailableIcon
-                        fillColor={"#808080"}
-                        size={isSmall ? "5px" : isMedium ? "8px" : "10px"}
-                      />
-                      <Typography className="side-panel-count">
-                        {allCount}
-                      </Typography>
-                      <Typography className="side-panel-count-Typography">
-                        All PARKING LOTS
-                      </Typography>
-                    </Box>
-                  </Tooltip>
-                </Grid>
-              </Grid>
-
-              {/* RadioButtons */}
-              <Grid
-                container
-                className="radio-button-margin"
-                justifyContent={"center"}
+            <Box display="flex" gap={2}>
+              <Button
+                onClick={() => {
+                  startLiveLocation();
+                  handleButtonClick("start");
+                }}
+                startIcon={<MyLocationIcon />}
+                sx={{
+                  borderRadius: "30px",
+                  px: 3,
+                  fontWeight: 600,
+                  background:
+                    selectedButton === "start"
+                      ? "linear-gradient(45deg,#2196F3,#21CBF3)"
+                      : "transparent",
+                  color: selectedButton === "start" ? "#fff" : "#333",
+                  "&:hover": {
+                    background: "linear-gradient(45deg,#1976d2,#42a5f5)",
+                    color: "#fff",
+                  },
+                }}
               >
-                <Grid item md={10.4} lg={10.4} sm={9}>
-                  <Box className="radio-button-Box">
-                    <RadioGroup
-                      value={selectedBayType}
-                      onChange={(e) => {
-                        handleBayTypeChange(e);
-                        filterCount(e);
-                        setSelectedButton(null);
-                      }}
-                      className="radio-button-RadioGroup"
-                    >
-                      <Grid item container my={1} ml={1}>
-                        <Grid item md={5.5} lg={5.5} sm={4.5}>
-                          <FormControlLabel
-                            value="ev_charging"
-                            control={
-                              <Radio
-                                size="small"
-                                icon={<RadioButtonUnchecked />}
-                                checkedIcon={
-                                  <RadioButtonCheckedIcon className="radio-button" />
-                                }
-                                style={{ padding: "5px" }}
-                              />
-                            }
-                            label={
-                              <Typography className="radio-button-Typography">
-                                EV
-                              </Typography>
-                            }
-                          />
-                        </Grid>
+                Start Live
+              </Button>
 
-                        <Grid item md={5.5} lg={5.5} sm={4.5}>
-                          <FormControlLabel
-                            value="accessibility"
-                            control={
-                              <Radio
-                                size="small"
-                                icon={<RadioButtonUnchecked />}
-                                checkedIcon={
-                                  <RadioButtonCheckedIcon className="radio-button" />
-                                }
-                                style={{ padding: "5px" }}
-                              />
-                            }
-                            label={
-                              <Typography className="radio-button-Typography">
-                                ACCESSIBILITY
-                              </Typography>
-                            }
-                          />
-                        </Grid>
-
-                        <Grid item md={12} lg={12} sm={9} mt={1}>
-                          <FormControlLabel
-                            value="all"
-                            control={
-                              <Radio
-                                size="small"
-                                icon={<RadioButtonUnchecked />}
-                                checkedIcon={
-                                  <RadioButtonCheckedIcon className="radio-button" />
-                                }
-                                style={{ padding: "5px" }}
-                              />
-                            }
-                            label={
-                              <Typography className="radio-button-Typography">
-                                ALL BAY
-                              </Typography>
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                    </RadioGroup>
-                  </Box>
-                </Grid>
-
-              </Grid>
-
-              {/* Toggle Map Icon */}
-              <Grid
-                item
-                container
-                gap={1}
-                justifyContent={"center"}
-                alignItems="center" 
-                className="radio-button-margin"
+              <Button
+                onClick={() => {
+                  stopLiveLocation();
+                  handleButtonClick("stop");
+                }}
+                startIcon={<MyLocationIcon />}
+                sx={{
+                  borderRadius: "30px",
+                  px: 3,
+                  fontWeight: 600,
+                  background:
+                    selectedButton === "stop"
+                      ? "linear-gradient(45deg,#f44336,#e57373)"
+                      : "transparent",
+                  color: selectedButton === "stop" ? "#fff" : "#333",
+                  "&:hover": {
+                    background: "linear-gradient(45deg,#d32f2f,#ef5350)",
+                    color: "#fff",
+                  },
+                }}
               >
-                <Grid item lg={5}>
-                  <Button
-                    sx={{
-                      color: "black",
-                      backgroundColor: "white",
-                      fontSize: isSmall ? "6px" : isMedium ? "8px" : "13px",
-                      fontWeight: "normal",
-                    }}
-                    onClick={toggleDrawer(true)}
-                    disabled={liveLocation === null || destination === null}
-                  >
-                    Show Other Routes
-                  </Button>
-                </Grid>
-                <Grid item lg={5}>
-                  <Button
-                    sx={{
-                      color: "black",
-                      backgroundColor: "white",
-                      fontSize: isSmall ? "6px" : isMedium ? "8px" : "13px",
-                      fontWeight: "normal",
-                    }}
-                    onClick={handleToggle}
-                  >
-                    Change Map Icon
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
+                Stop Live
+              </Button>
+
+              <Button onClick={(e) => setAnchorEl(e.currentTarget)}>
+                <MenuIcon />
+              </Button>
+            </Box>
           </Grid>
+        </Toolbar>
+      </AppBar>
+
+      <BasicMenu
+        open={open}
+        anchorEl={anchorEl}
+        handleClose={() => setAnchorEl(null)}
+      />
+
+      {/* ===== BODY ===== */}
+      <Grid container sx={{ mt: 9 }}>
+        {/* ===== MAP SECTION ===== */}
+        <Grid item xs={12} sm={9} md={9} lg={9}>
+          <Box
+            sx={{
+              height: "calc(100vh - 100px)",
+              borderRadius: "25px",
+              overflow: "hidden",
+              boxShadow: 6,
+              m: 1.5,
+            }}
+          >
+            <MapComponent />
+          </Box>
         </Grid>
 
-        <DrawerCom open={open1} toggleDrawer={toggleDrawer} />
+        {/* ===== SIDE PANEL ===== */}
+        <Grid item xs={12} sm={3} md={3} lg={3}>
+          <Box
+            sx={{
+              height: "calc(100vh - 100px)",
+              m: 1.5,
+              px: 1.5,
+              borderRadius: "20px",
+              background: "#ffffff",
+              boxShadow: 4,
+              display: "flex",
+              flexDirection: "column",
+              // justifyContent: "space-between",
+              gap: 3.5,
+            }}
+          >
+            {/* ===== COUNTS SECTION ===== */}
+            <Grid display="flex" flexDirection="column" gap={1.5}>
+              {/* Row 1: Available + Occupied */}
+              <Box display="flex" gap={1} pt={2}>
+                {/* Available */}
+                <Box
+                  onClick={() => handleAvailabilityChange("available")}
+                  sx={{
+                    flex: 1,
+                    p: 1,
+                    borderRadius: "12px",
+                    background:
+                      selectedBox === "available" ? "#e8f5e9" : "#f7f7f7",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    cursor: "pointer",
+                    transition: "0.2s",
+                    "&:hover": {
+                      background: "#e8f5e9",
+                    },
+                  }}
+                >
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Box
+                      sx={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: "#00B500",
+                      }}
+                    />
+                    <Typography fontSize="12px" fontWeight={500}>
+                      Available :
+                    </Typography>
+                  </Box>
+
+                  <Typography fontSize="14px" fontWeight="bold">
+                    {availableCount}
+                  </Typography>
+                </Box>
+
+                {/* Occupied */}
+                <Box
+                  onClick={() => handleAvailabilityChange("occupied")}
+                  sx={{
+                    flex: 1,
+                    p: 1,
+                    borderRadius: "12px",
+                    background:
+                      selectedBox === "occupied" ? "#e3f2fd" : "#f7f7f7",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    cursor: "pointer",
+                    transition: "0.2s",
+                    "&:hover": {
+                      background: "#e3f2fd",
+                    },
+                  }}
+                >
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Box
+                      sx={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: "#1565C0",
+                      }}
+                    />
+                    <Typography fontSize="12px" fontWeight={500}>
+                      Occupied :
+                    </Typography>
+                  </Box>
+
+                  <Typography fontSize="14px" fontWeight="bold">
+                    {occupiedCount}
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Row 2: All Centered */}
+              <Box
+                onClick={() => handleAvailabilityChange("all-avail")}
+                sx={{
+                  p: 1,
+                  borderRadius: "12px",
+                  background:
+                    selectedBox === "all-avail" ? "#dadac998" : "#f7f7f7",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  transition: "0.2s",
+                  "&:hover": {
+                    background: "#dadac998",
+                  },
+                }}
+              >
+                <Typography fontSize="13px" fontWeight={500}>
+                  All Parking :{" "}
+                  <span style={{ fontWeight: "bold" }}>{allCount}</span>
+                </Typography>
+              </Box>
+            </Grid>
+
+            {/* ===== BAY TYPE FILTER */}
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: "14px",
+                background: "#f5f5f5",
+              }}
+            >
+              <Typography fontSize="13px" fontWeight="bold" mb={1}>
+                Bay Type
+              </Typography>
+
+              {/* First Row */}
+              <Box display="flex" gap={2}>
+                {/* EV */}
+                <Box
+                  onClick={() => {
+                    const fakeEvent = { target: { value: "ev_charging" } };
+                    handleBayTypeChange(fakeEvent);
+                    filterCount(fakeEvent);
+                    setSelectedButton(null);
+                  }}
+                  sx={{
+                    flex: 1,
+                    p: 1,
+                    borderRadius: "10px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    background:
+                      selectedBayType === "ev_charging" ? "#e3f2fd" : "#ffffff",
+                    border:
+                      selectedBayType === "ev_charging"
+                        ? "1px solid #1976d2"
+                        : "1px solid #e0e0e0",
+                    transition: "0.2s",
+                    "&:hover": {
+                      background: "#e3f2fd",
+                    },
+                  }}
+                >
+                  ⚡ EV
+                </Box>
+
+                {/* Accessibility */}
+                <Box
+                  onClick={() => {
+                    const fakeEvent = { target: { value: "accessibility" } };
+                    handleBayTypeChange(fakeEvent);
+                    filterCount(fakeEvent);
+                    setSelectedButton(null);
+                  }}
+                  sx={{
+                    flex: 1,
+                    p: 1,
+                    borderRadius: "10px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    background:
+                      selectedBayType === "accessibility"
+                        ? "#e3f2fd"
+                        : "#ffffff",
+                    border:
+                      selectedBayType === "accessibility"
+                        ? "1px solid #1976d2"
+                        : "1px solid #e0e0e0",
+                    transition: "0.2s",
+                    "&:hover": {
+                      background: "#e3f2fd",
+                    },
+                  }}
+                >
+                  ♿ Access
+                </Box>
+              </Box>
+
+              {/* Second Row - All */}
+              <Box
+                mt={1.5}
+                onClick={() => {
+                  const fakeEvent = { target: { value: "all" } };
+                  handleBayTypeChange(fakeEvent);
+                  filterCount(fakeEvent);
+                  setSelectedButton(null);
+                }}
+                sx={{
+                  p: 1.5,
+                  borderRadius: "10px",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  background: selectedBayType === "all" ? "#e3f2fd" : "#ffffff",
+                  border:
+                    selectedBayType === "all"
+                      ? "1px solid #1976d2"
+                      : "1px solid #e0e0e0",
+                  transition: "0.2s",
+                  "&:hover": {
+                    background: "#e3f2fd",
+                  },
+                }}
+              >
+                All Bays
+              </Box>
+            </Box>
+
+            {/* ===== BUTTONS ===== */}
+            <Box display="flex" flexDirection="column" gap={1.5}>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={toggleDrawer(true)}
+                disabled={liveLocation === null || destination === null}
+                sx={{
+                  borderRadius: "20px",
+                  fontSize: "13px",
+                  py: 1,
+                  background: "white",
+                }}
+              >
+                Show Other Routes
+              </Button>
+
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={handleToggle}
+                sx={{
+                  borderRadius: "20px",
+                  fontSize: "13px",
+                  py: 1,
+                }}
+              >
+                Change Map Icon
+              </Button>
+            </Box>
+          </Box>
+        </Grid>
       </Grid>
+
+      <DrawerCom open={open1} toggleDrawer={toggleDrawer} />
     </Container>
   );
 };
