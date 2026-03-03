@@ -179,8 +179,8 @@ const Home = () => {
         const { latitude, longitude } = pos.coords;
         console.log("Updated Location:", latitude, longitude);
 
-        dispatch(setLiveLocation({ lat: 53.35014, lng: -6.266155 }));
-        dispatch(setCenter({ lat: 53.35014, lng: -6.266155 }));
+        dispatch(setLiveLocation({ lat: latitude, lng: longitude }));
+        dispatch(setCenter({ lat: latitude, lng: longitude }));
         dispatch(setZoom(13));
         dispatch(setDashCenter(null));
       },
@@ -197,6 +197,36 @@ const Home = () => {
 
     setWatchId(id);
   };
+
+//   const startLiveLocation = () => {
+//   if (!navigator.geolocation) {
+//     dispatch(setError("Geolocation is not supported by this browser"));
+//     return;
+//   }
+
+//   navigator.geolocation.getCurrentPosition(
+//     (pos) => {
+//       const { latitude, longitude, accuracy } = pos.coords;
+
+//       console.log("Current Location:", latitude, longitude);
+//       console.log("Accuracy (meters):", accuracy);
+
+//       dispatch(setLiveLocation({ lat: latitude, lng: longitude }));
+//       dispatch(setCenter({ lat: latitude, lng: longitude }));
+//       dispatch(setZoom(13));
+//       dispatch(setDashCenter(null));
+//     },
+//     (err) => {
+//       console.error(`Geolocation error (${err.code}): ${err.message}`);
+//       dispatch(setError(`Geolocation error: ${err.message}`));
+//     },
+//     {
+//       enableHighAccuracy: true,
+//       timeout: 15000,     // Increased for better GPS lock
+//       maximumAge: 0,
+//     }
+//   );
+// };
 
   const stopLiveLocation = () => {
     if (watchId) {
@@ -631,7 +661,7 @@ const Home = () => {
                   borderRadius: "20px",
                   fontSize: "13px",
                   py: 1,
-                  background: "white",
+                  // background: "",
                 }}
               >
                 Show Other Routes
