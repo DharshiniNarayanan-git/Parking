@@ -1,15 +1,17 @@
 import {
-  Avatar,
-  Button,
-  Checkbox,
   Container,
-  Divider,
   Grid,
-  IconButton,
-  TextField,
   Typography,
-  CircularProgress,
+  TextField,
+  Button,
+  Avatar,
+  IconButton,
+  Divider,
   Alert,
+  Checkbox,
+  CircularProgress,
+  Paper,
+  Box
 } from "@mui/material";
 import React, { useState } from "react";
 import MicrosoftIcon from "@mui/icons-material/Microsoft";
@@ -35,8 +37,10 @@ function SignIn() {
 
     try {
       const url = isRegister
-        ? "http://localhost:8080/api/auth/register"
-        : "http://localhost:8080/api/auth/login";
+        // ? "http://localhost:8080/api/auth/register"
+        // : "http://localhost:8080/api/auth/login";
+        ? "https://parkingserver-6onn.onrender.com/api/auth/register"
+        : "https://parkingserver-6onn.onrender.com/api/auth/login";
 
       const response = await axios.post(url, {
         email,
@@ -59,92 +63,164 @@ function SignIn() {
     }
   };
 
-  return (
-    <Container maxWidth={false} sx={{ height: 550 }} disableGutters>
-      <Grid container height={"100%"} alignItems={"center"}>
-        <Grid item lg={6} textAlign={"center"}>
-          <img
-            src="Access_Earth_Logo.png"
-            alt="Logo"
-            style={{ width: "100%", maxWidth: "300px", height: "30vh" }}
-          />
+ return (
+  <Container
+    maxWidth={false}
+    disableGutters
+    sx={{
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "linear-gradient(135deg, #f4f7fb, #e8efff)",
+      px: 2,
+    }}
+  >
+    <Paper
+      elevation={6}
+      sx={{
+        width: "100%",
+        maxWidth: 1000,
+        borderRadius: 3,
+        overflow: "hidden",
+      }}
+    >
+      <Grid container>
+
+        {/* LEFT SIDE - LOGO */}
+        <Grid
+          item
+          xs={12}
+          md={6}
+          sx={{
+            background: "#ffffff",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            p: 4,
+          }}
+        >
+          <Box textAlign="center">
+            <Box
+              component="img"
+              src="spaces.png"
+              alt="Logo"
+              sx={{
+                width: "100%",
+                maxWidth: 200,
+                mb: 2,
+              }}
+            />
+            <Typography variant="h5" fontWeight="bold">
+              Parking Tracker
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Find. Park. Move On.
+            </Typography>
+          </Box>
         </Grid>
 
-        <Grid item lg={6}>
-          <Grid display={"flex"} gap={1} mb={2} justifyContent={"center"}>
-            <Typography fontSize={25} color={"#7E7E7E"}>
-              {isRegister ? "Register with" : "Sign in with"}
-            </Typography>
-            <Avatar sx={{ bgcolor: "#386BC0" }}>
-              <IconButton sx={{ color: "white" }}>
-                <MicrosoftIcon />
-              </IconButton>
-            </Avatar>
-            <Avatar sx={{ bgcolor: "#386BC0" }}>
-              <IconButton sx={{ color: "white" }}>
-                <FacebookIcon />
-              </IconButton>
-            </Avatar>
-            <Avatar sx={{ bgcolor: "#386BC0" }}>
-              <IconButton sx={{ color: "white" }}>
-                <TwitterIcon />
-              </IconButton>
-            </Avatar>
-          </Grid>
+        {/* RIGHT SIDE - FORM */}
+        <Grid item xs={12} md={6} sx={{ p: 4 }}>
+          <Box maxWidth={400} mx="auto">
 
-          <Divider sx={{ width: 410, mx: "auto", my: 2 }}>Or</Divider>
+            {/* Social Login */}
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              gap={2}
+              mb={2}
+            >
+              <Typography color="#7E7E7E">
+                {isRegister ? "Register with" : "Sign in with"}
+              </Typography>
 
-          {/* Error */}
-          {error && (
-            <Alert severity="error" sx={{ width: 450, mb: 2 }}>
-              {error}
-            </Alert>
-          )}
+              {[MicrosoftIcon, FacebookIcon, TwitterIcon].map(
+                (Icon, index) => (
+                  <Avatar
+                    key={index}
+                    sx={{
+                      bgcolor: "#386BC0",
+                      cursor: "pointer",
+                      transition: "0.3s",
+                      "&:hover": { bgcolor: "#2f5aa3" },
+                    }}
+                  >
+                    <Icon fontSize="small" />
+                  </Avatar>
+                )
+              )}
+            </Box>
 
-          {/* Success */}
-          {success && (
-            <Alert severity="success" sx={{ width: 450, mb: 2 }}>
-              {success}
-            </Alert>
-          )}
+            <Divider sx={{ my: 2 }}>Or</Divider>
 
-          <Grid container gap={2}>
+            {/* Alerts */}
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+
+            {success && (
+              <Alert severity="success" sx={{ mb: 2 }}>
+                {success}
+              </Alert>
+            )}
+
+            {/* Form Fields */}
             <TextField
+              fullWidth
               label="Email"
-              variant="outlined"
-              sx={{ width: 450 }}
+              margin="normal"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+
             <TextField
+              fullWidth
               label="Password"
               type="password"
-              variant="outlined"
-              sx={{ width: 450 }}
+              margin="normal"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-          </Grid>
 
-          {!isRegister && (
-            <Grid container justifyContent={"space-between"} sx={{ width: 450, mt: 1 }}>
-              <Grid item>
-                <Checkbox />
-                Remember Me
-              </Grid>
-              <Grid item>
-                <Button sx={{ textTransform: "none", color: "#525252" }}>
-                  Forget Password?
+            {!isRegister && (
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mt={1}
+              >
+                <Box display="flex" alignItems="center">
+                  <Checkbox size="small" />
+                  <Typography variant="body2">Remember Me</Typography>
+                </Box>
+
+                <Button
+                  size="small"
+                  sx={{ textTransform: "none" }}
+                >
+                  Forgot Password?
                 </Button>
-              </Grid>
-            </Grid>
-          )}
+              </Box>
+            )}
 
-          <Grid mt={2}>
             <Button
               variant="contained"
               fullWidth
-              sx={{ width: 450 }}
+              sx={{
+                mt: 3,
+                py: 1.2,
+                borderRadius: 2,
+                fontWeight: "bold",
+                background: "linear-gradient(135deg, #2b7cff, #0052cc)",
+                "&:hover": {
+                  background: "linear-gradient(135deg, #1e5fd8, #003d99)",
+                },
+              }}
               onClick={handleSubmit}
               disabled={loading}
             >
@@ -156,33 +232,35 @@ function SignIn() {
                 "Login"
               )}
             </Button>
-          </Grid>
 
-          <Grid display={"flex"} alignItems={"center"} mt={2}>
-            <Typography>
-              {isRegister
-                ? "Already have an account?"
-                : "Don't have an account?"}
-            </Typography>
-            <Button
-              sx={{
-                textTransform: "none",
-                color: "red",
-                fontWeight: "bold",
-              }}
-              onClick={() => {
-                setIsRegister(!isRegister);
-                setError("");
-                setSuccess("");
-              }}
-            >
-              {isRegister ? "Login" : "Register"}
-            </Button>
-          </Grid>
+            <Box textAlign="center" mt={2}>
+              <Typography variant="body2">
+                {isRegister
+                  ? "Already have an account?"
+                  : "Don't have an account?"}
+              </Typography>
+
+              <Button
+                onClick={() => {
+                  setIsRegister(!isRegister);
+                  setError("");
+                  setSuccess("");
+                }}
+                sx={{
+                  textTransform: "none",
+                  fontWeight: "bold",
+                }}
+              >
+                {isRegister ? "Login" : "Register"}
+              </Button>
+            </Box>
+
+          </Box>
         </Grid>
       </Grid>
-    </Container>
-  );
+    </Paper>
+  </Container>
+);
 }
 
 export default SignIn;

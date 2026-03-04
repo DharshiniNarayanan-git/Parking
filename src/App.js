@@ -150,7 +150,8 @@ export function App() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.get("http://localhost:8080/api/parking", {
+      // const response = await axios.get("http://localhost:8080/api/parking",
+      const response = await axios.get("https://parkingserver-6onn.onrender.com/api/parking", {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,

@@ -2,13 +2,14 @@
   "name": "googlemap",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://Dharshini Narayanan.github.io/Parking" ,
   "dependencies": {
     "@azure/msal-browser": "^3.27.0",
     "@azure/msal-react": "^2.2.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mapbox/polyline": "^1.2.1",
-    "@mui/icons-material": "^5.17.1",
+    "@mui/icons-material": "^5.18.0",
     "@mui/material": "^5.17.1",
     "@mui/x-charts": "^7.20.0",
     "@okta/oidc-middleware": "^5.4.2",
@@ -23,7 +24,6 @@
     "@vis.gl/react-google-maps": "^1.1.0",
     "axios": "^1.7.2",
     "dotenv": "^16.5.0",
-    "gh-pages": "^6.1.1",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.46",
@@ -43,6 +43,7 @@
     "redux": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
+  
   "scripts": {
     "start": "react-scripts start",
     "predeploy": "npm run build",
@@ -68,5 +69,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }
