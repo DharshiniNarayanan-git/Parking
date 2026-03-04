@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/Parking/static/css/main.40f6ae9f.css",
+    "main.js": "/Parking/static/js/main.4a0f55a5.js",
+    "static/js/453.85b4ef7b.chunk.js": "/Parking/static/js/453.85b4ef7b.chunk.js",
+    "static/media/parking.gif": "/Parking/static/media/parking.dbdd5d1c4e7da2a6cca6.gif",
+    "static/media/car.png": "/Parking/static/media/car.a5564337f5e8d113d78c.png",
+    "index.html": "/Parking/index.html",
+    "main.40f6ae9f.css.map": "/Parking/static/css/main.40f6ae9f.css.map",
+    "main.4a0f55a5.js.map": "/Parking/static/js/main.4a0f55a5.js.map",
+    "453.85b4ef7b.chunk.js.map": "/Parking/static/js/453.85b4ef7b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.40f6ae9f.css",
+    "static/js/main.4a0f55a5.js"
+  ]
+}
