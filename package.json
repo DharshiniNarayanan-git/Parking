@@ -2,7 +2,7 @@
   "name": "googlemap",
   "version": "0.1.0",
   "private": true,
-  "homepage": "." ,
+  "homepage": "https://dharshininarayanan-git.github.io/Parking/" ,
   "dependencies": {
     "@azure/msal-browser": "^3.27.0",
     "@azure/msal-react": "^2.2.0",

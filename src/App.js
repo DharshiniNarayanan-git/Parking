@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import { Provider, useDispatch } from "react-redux";
 import store from "./redux/store";
 import Home from "./Components/Home";
@@ -302,7 +302,7 @@ export function App() {
           centerLocation,
         }}
       >
-        <BrowserRouter>
+        <HashRouter>
           <Routes>
             <Route path="/" element={<SignIn />} />
             <Route path="/home" element={<Home />} />
@@ -313,7 +313,7 @@ export function App() {
             <Route path="graph" element={<Graph />} />
             <Route path="menu" element={<BasicMenu />} />
           </Routes>
-        </BrowserRouter>
+        </HashRouter>
       </MapContext.Provider>
     </Provider>
   );
