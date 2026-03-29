@@ -18,6 +18,7 @@ import {
 import MyLocationIcon from "@mui/icons-material/MyLocation";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import "react-toastify/dist/ReactToastify.css";
+import logo from "../Assets/logo.png";
 
 import "../Styles/Home.css";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -332,11 +333,12 @@ const Home = () => {
       >
         <Toolbar>
           <Grid container alignItems="center" justifyContent="space-between">
-            <Box
-              component="img"
-              src="Access_Earth_Logo.png"
-              sx={{ height: 40 }}
-            />
+           <Box
+  component="img"
+  src={logo}
+  alt="logo"
+  sx={{ height: 80 }}
+/>
 
             <Box display="flex" gap={2}>
               <Button

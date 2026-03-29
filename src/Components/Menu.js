@@ -34,14 +34,14 @@ export default function BasicMenu({ open, anchorEl, handleClose }) {
       >
         Dashboard
       </MenuItem>
-      <MenuItem
+      {/* <MenuItem
         onClick={() => {
           handleClose();
           goToGraph();
         }}
       >
         Graph
-      </MenuItem>
+      </MenuItem> */}
       {/* <MenuItem onClick={handleLogout}>Logout</MenuItem> */}
       <MenuItem onClick={() => navigate("/")}>Logout</MenuItem>
     </Menu>

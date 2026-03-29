@@ -35,15 +35,19 @@ function Dashboard() {
       console.log("loca", location);
 
       let color;
-      if (occupiedSpaces === 'available' && type === "accessibility") {
-        color = "#2E7D32";
-      } else if (occupiedSpaces === 'occupied' && type === "accessibility") {
-        color = "red";
-      } else if (occupiedSpaces === 'available' && type == "ev_charging") {
-        color = "#77F401";
-      } else if (occupiedSpaces === 'occupied' && type == "ev_charging") {
-        color = "blue";
-      }
+
+if (occupiedSpaces === 'available' && type === "accessibility") {
+  color = "#22c55e";   // green (available)
+} 
+else if (occupiedSpaces === 'occupied' && type === "accessibility") {
+  color = "#ef4444";   // red (occupied)
+} 
+else if (occupiedSpaces === 'available' && type === "ev_charging") {
+  color = "#14b8a6";   // teal (EV available)
+} 
+else if (occupiedSpaces === 'occupied' && type === "ev_charging") {
+  color = "#ef4444";   // red (EV occupied)
+}
 
       return { color, name, location };
     });
@@ -86,7 +90,7 @@ function Dashboard() {
           { color: "#2E7D32", label: "Normal Available" },
           { color: "red", label: "Normal Occupied" },
           { color: "#77F401", label: "EV Available" },
-          { color: "#0000FF", label: "EV Occupied" },
+          { color: "red", label: "EV Occupied" },
         ].map((item, index) => (
           <Grid item key={index}>
             <Box display="flex" alignItems="center" gap={1}>

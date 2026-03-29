@@ -11,21 +11,26 @@ import {
   Checkbox,
   CircularProgress,
   Paper,
-  Box
+  Box,
+  InputAdornment
 } from "@mui/material";
 import React, { useState } from "react";
 import MicrosoftIcon from "@mui/icons-material/Microsoft";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
+import EmailIcon from "@mui/icons-material/Email";
+import LockIcon from "@mui/icons-material/Lock";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import logo from "../Assets/logo.png";
 
 function SignIn() {
   const navigate = useNavigate();
 
-  const [isRegister, setIsRegister] = useState(false); // Toggle mode
+  const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -37,8 +42,6 @@ function SignIn() {
 
     try {
       const url = isRegister
-        // ? "http://localhost:8080/api/auth/register"
-        // : "http://localhost:8080/api/auth/login";
         ? "https://parkingserver-6onn.onrender.com/api/auth/register"
         : "https://parkingserver-6onn.onrender.com/api/auth/login";
 
@@ -56,211 +59,289 @@ function SignIn() {
         navigate("/home");
       }
     } catch (err) {
-      console.error(err);
       setError(err.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
- return (
-  <Container
-    maxWidth={false}
-    disableGutters
-    sx={{
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "linear-gradient(135deg, #f4f7fb, #e8efff)",
-      px: 2,
-    }}
-  >
-    <Paper
-      elevation={6}
+  const socialColors = ["#2F2F2F", "#1877F2", "#1DA1F2"];
+
+  return (
+    <Container
+      maxWidth={false}
+      disableGutters
       sx={{
-        width: "100%",
-        maxWidth: 1000,
-        borderRadius: 3,
-        overflow: "hidden",
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #667eea, #764ba2)",
+        px: 2,
       }}
     >
-      <Grid container>
+      <Paper
+        elevation={0}
+        sx={{
+          width: "100%",
+          maxWidth: 1000,
+          borderRadius: 4,
+          overflow: "hidden",
+          backdropFilter: "blur(20px)",
+          background: "rgba(255,255,255,0.9)",
+          boxShadow: "0 20px 50px rgba(0,0,0,0.2)",
+          animation: "fadeIn 0.8s ease",
+        }}
+      >
+        <Grid container>
 
-        {/* LEFT SIDE - LOGO */}
-        <Grid
-          item
-          xs={12}
-          md={6}
-          sx={{
-            background: "#ffffff",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            p: 4,
-          }}
-        >
-          <Box textAlign="center">
+          {/* 🔥 LEFT SIDE (IMPROVED) */}
+          <Grid
+            item
+            xs={12}
+            md={6}
+            sx={{
+              position: "relative",
+              background: "linear-gradient(135deg, #2b7cff, #00c6ff)",
+              color: "#fff",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              p: 6,
+              overflow: "hidden",
+            }}
+          >
+            {/* Decorative Shapes */}
             <Box
-              component="img"
-              src="spaces.png"
-              alt="Logo"
               sx={{
-                width: "100%",
-                maxWidth: 200,
-                mb: 2,
+                position: "absolute",
+                width: 300,
+                height: 300,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.1)",
+                top: -80,
+                right: -80,
               }}
             />
-            <Typography variant="h5" fontWeight="bold">
-              Parking Tracker
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Find. Park. Move On.
-            </Typography>
-          </Box>
-        </Grid>
-
-        {/* RIGHT SIDE - FORM */}
-        <Grid item xs={12} md={6} sx={{ p: 4 }}>
-          <Box maxWidth={400} mx="auto">
-
-            {/* Social Login */}
             <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              gap={2}
-              mb={2}
-            >
-              <Typography color="#7E7E7E">
-                {isRegister ? "Register with" : "Sign in with"}
+              sx={{
+                position: "absolute",
+                width: 200,
+                height: 200,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.08)",
+                bottom: -60,
+                left: -60,
+              }}
+            />
+
+            {/* Content */}
+            <Box sx={{ position: "relative", zIndex: 1 }}>
+
+              {/* Logo (fixed position) */}
+              <Box
+  component="img"
+  src={logo}
+  alt="AccessPark Logo"
+  sx={{
+    width: 350,
+    mb: 4,
+    objectFit: "contain"
+  }}
+/>
+
+              <Typography variant="h4" fontWeight="bold" gutterBottom>
+                Smart Parking Starts Here 🚗
               </Typography>
 
-              {[MicrosoftIcon, FacebookIcon, TwitterIcon].map(
-                (Icon, index) => (
-                  <Avatar
-                    key={index}
-                    sx={{
-                      bgcolor: "#386BC0",
-                      cursor: "pointer",
-                      transition: "0.3s",
-                      "&:hover": { bgcolor: "#2f5aa3" },
-                    }}
-                  >
-                    <Icon fontSize="small" />
-                  </Avatar>
-                )
-              )}
-            </Box>
-
-            <Divider sx={{ my: 2 }}>Or</Divider>
-
-            {/* Alerts */}
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
-              </Alert>
-            )}
-
-            {success && (
-              <Alert severity="success" sx={{ mb: 2 }}>
-                {success}
-              </Alert>
-            )}
-
-            {/* Form Fields */}
-            <TextField
-              fullWidth
-              label="Email"
-              margin="normal"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-
-            <TextField
-              fullWidth
-              label="Password"
-              type="password"
-              margin="normal"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-
-            {!isRegister && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                mt={1}
+              <Typography
+                variant="body1"
+                sx={{ opacity: 0.9, mb: 4, lineHeight: 1.6 }}
               >
-                <Box display="flex" alignItems="center">
-                  <Checkbox size="small" />
-                  <Typography variant="body2">Remember Me</Typography>
+                Find, book, and manage parking spaces effortlessly.
+                Save time and park smarter with AccessPark.
+              </Typography>
+
+              <Box>
+                <Typography sx={{ mb: 1 }}>
+                  ✔ Real-time parking availability
+                </Typography>
+                <Typography sx={{ mb: 1 }}>
+                  ✔ Instant booking
+                </Typography>
+                <Typography>
+                  ✔ Secure & reliable system
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
+
+          {/* RIGHT SIDE */}
+          <Grid item xs={12} md={6} sx={{ p: 4 }}>
+            <Box maxWidth={400} mx="auto">
+
+              {/* Heading */}
+              <Typography variant="h5" fontWeight="bold" mb={1}>
+                {isRegister ? "Create Account" : "Welcome Back"}
+              </Typography>
+
+              <Typography variant="body2" color="text.secondary" mb={2}>
+                {isRegister
+                  ? "Start your smart parking journey"
+                  : "Login to continue"}
+              </Typography>
+
+              {/* Social Login */}
+              <Box display="flex" alignItems="center" gap={2} mb={2}>
+                <Typography color="#7E7E7E">
+                  {isRegister ? "Register with" : "Sign in with"}
+                </Typography>
+
+                {[MicrosoftIcon, FacebookIcon, TwitterIcon].map(
+                  (Icon, index) => (
+                    <Avatar
+                      key={index}
+                      sx={{
+                        bgcolor: socialColors[index],
+                        cursor: "pointer",
+                        transition: "0.3s",
+                        "&:hover": { transform: "scale(1.1)" },
+                      }}
+                    >
+                      <Icon fontSize="small" />
+                    </Avatar>
+                  )
+                )}
+              </Box>
+
+              <Divider sx={{ my: 2 }}>Or</Divider>
+
+              {/* Alerts */}
+              {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+              {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+
+              {/* Email */}
+              <TextField
+                fullWidth
+                label="Email"
+                margin="normal"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                InputProps={{
+                  sx: { borderRadius: 2 },
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              {/* Password */}
+              <TextField
+                fullWidth
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                margin="normal"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  sx: { borderRadius: 2 },
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <IconButton onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? "🙈" : "👁️"}
+                    </IconButton>
+                  ),
+                }}
+              />
+
+              {/* Remember + Forgot */}
+              {!isRegister && (
+                <Box display="flex" justifyContent="space-between" mt={1}>
+                  <Box display="flex" alignItems="center">
+                    <Checkbox size="small" />
+                    <Typography variant="body2">Remember Me</Typography>
+                  </Box>
+                  <Button size="small">Forgot Password?</Button>
                 </Box>
+              )}
+
+              {/* Button */}
+              <Button
+                fullWidth
+                onClick={handleSubmit}
+                disabled={loading}
+                sx={{
+                  mt: 3,
+                  py: 1.3,
+                  borderRadius: 3,
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                  background: "linear-gradient(135deg, #00c6ff, #0072ff)",
+                  color: "#fff",
+                  transition: "0.3s",
+                  "&:hover": {
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
+                  },
+                }}
+              >
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : isRegister ? (
+                  "Register"
+                ) : (
+                  "Login"
+                )}
+              </Button>
+
+              {/* Toggle */}
+              <Box textAlign="center" mt={2}>
+                <Typography variant="body2">
+                  {isRegister
+                    ? "Already have an account?"
+                    : "Don't have an account?"}
+                </Typography>
 
                 <Button
-                  size="small"
-                  sx={{ textTransform: "none" }}
+                  onClick={() => {
+                    setIsRegister(!isRegister);
+                    setError("");
+                    setSuccess("");
+                  }}
+                  sx={{ textTransform: "none", fontWeight: "bold" }}
                 >
-                  Forgot Password?
+                  {isRegister ? "Login" : "Register"}
                 </Button>
               </Box>
-            )}
 
-            <Button
-              variant="contained"
-              fullWidth
-              sx={{
-                mt: 3,
-                py: 1.2,
-                borderRadius: 2,
-                fontWeight: "bold",
-                background: "linear-gradient(135deg, #2b7cff, #0052cc)",
-                "&:hover": {
-                  background: "linear-gradient(135deg, #1e5fd8, #003d99)",
-                },
-              }}
-              onClick={handleSubmit}
-              disabled={loading}
-            >
-              {loading ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : isRegister ? (
-                "Register"
-              ) : (
-                "Login"
-              )}
-            </Button>
-
-            <Box textAlign="center" mt={2}>
-              <Typography variant="body2">
-                {isRegister
-                  ? "Already have an account?"
-                  : "Don't have an account?"}
-              </Typography>
-
-              <Button
-                onClick={() => {
-                  setIsRegister(!isRegister);
-                  setError("");
-                  setSuccess("");
-                }}
-                sx={{
-                  textTransform: "none",
-                  fontWeight: "bold",
-                }}
-              >
-                {isRegister ? "Login" : "Register"}
-              </Button>
             </Box>
-
-          </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    </Paper>
-  </Container>
-);
+      </Paper>
+
+      {/* Animation */}
+      <style>
+        {`
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}
+      </style>
+    </Container>
+  );
 }
 
 export default SignIn;
